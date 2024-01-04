@@ -16,14 +16,24 @@ public class CharacterUnit : MonoBehaviour, ISelectable
 
     public Action OnSelected;
 
+    public CharacterModel Model => model;
+
     public void MoveTo(Vector3 destination)
     {
         agent.SetDestination(destination);
     }
 
-    public void SetFollowTarget(Transform newTarget) => followTarget = newTarget;
+    public void SetFollowTarget(Transform newTarget)
+    {
+        followTarget = newTarget;
+        agent.stoppingDistance = 2f;
+    }
 
-    public void ClearFollowTarget() => followTarget = null;
+    public void ClearFollowTarget()
+    {
+        followTarget = null;
+        agent.stoppingDistance = 0f;
+    }
 
     public void Select() => OnSelected?.Invoke();
 
@@ -42,6 +52,10 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         meshRenderer = GetComponent<MeshRenderer>();
 
         model.RandomizeStats();
+
+        agent.speed = model.Speed;
+        agent.angularSpeed = model.Agility;
+
         var propertyBlock = new MaterialPropertyBlock();
         meshRenderer.GetPropertyBlock(propertyBlock);
         propertyBlock.SetColor("_BaseColor", model.MainColor);

@@ -2,33 +2,45 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class CharacterGroupView : MonoBehaviour
 {
     [SerializeField]
-    private Button characterButtonPrefab;
+    private ToggleGroup toggleGroup;
 
     [SerializeField]
-    private TransferFunction characterButtonsParent;
+    private UnitButton characterButtonPrefab;
 
-    private Button[] characterButtons;
+    [SerializeField]
+    private Transform characterButtonsParent;
+
+    private List<UnitButton> characterButtons = new();
 
     /// <summary>
     /// Parameter is an ID of a selected unit
     /// </summary>
     public Action<int> OnUnitSelected;
 
-    public void CreateUnitButtons(int numberOfUnits)
+
+    public void CreateUnitButton(CharacterModel characterModel)
     {
-        characterButtons = new Button[numberOfUnits];
+        var newButton = Instantiate(characterButtonPrefab, characterButtonsParent);
+        var index = characterButtons.Count;
+        newButton.Toggle.onValueChanged.AddListener((a) => SelectUnit(index));
+        newButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Unit {index}";
+        newButton.Toggle.group = toggleGroup;
+        newButton.SetIconColor(characterModel.MainColor);
 
-        for (int i = 0; i < characterButtons.Length; i++)
-        {
-            characterButtons[i].onClick.AddListener(() => SelectUnit(i));
-            characterButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = $"Unit {i}";
-        }
-
+        characterButtons.Add(newButton);
     }
+
+    public void SetUnitSelected(int index)
+    {
+        toggleGroup.SetAllTogglesOff();
+        characterButtons[index].Toggle.SetIsOnWithoutNotify(true);
+    }
+
 
     private void SelectUnit(int unitID) => OnUnitSelected?.Invoke(unitID);
 }

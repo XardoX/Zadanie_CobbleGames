@@ -1,16 +1,18 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.AI;
-
 public class CharacterGroup : MonoBehaviour
 {
     [SerializeField]
     private CharacterUnit[] units;
 
+    [SerializeField]
+    private CharacterGroupView view;
+
     private CharacterUnit selectedUnit;
 
     public void SelectUnit(int unitID)
     {
+        GameManager.Player.SetSelectedObject(units[unitID]);
+        GameManager.Camera.SetMainTarget(unitID);
         selectedUnit = units[unitID];
         foreach (var unit in units)
         {
@@ -39,6 +41,9 @@ public class CharacterGroup : MonoBehaviour
         {
             var id = i;
             units[i].OnSelected += () => SelectUnit(id);
+            view.OnUnitSelected += SelectUnit;
+            view.CreateUnitButton(units[i].Model);
+            GameManager.Camera.AddTarget(units[i].transform);
         }
     }
 }

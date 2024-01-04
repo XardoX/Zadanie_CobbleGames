@@ -5,11 +5,15 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+
     private Controls input;
 
     private ISelectable selectedObject;
+
+    public void SetSelectedObject(ISelectable selectable) => selectedObject = selectable;
+
     private void Awake()
-    {
+    { 
         input = new();
         AssignInputs();
     }
