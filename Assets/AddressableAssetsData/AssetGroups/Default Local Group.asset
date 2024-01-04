@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: beb4bde618545ff4b859775d359715d3
+  m_SerializeEntries:
+  - m_GUID: 49df7ad4085951043bc2f472fb5740cd
+    m_Address: Assets/Prefabs/Areas/Area_01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44b462acbed393447942707e9f72bb28
+    m_Address: Assets/Prefabs/Areas/Area_02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74f66bd473ef72e4a8685f2d2c79776f
+    m_Address: Assets/Prefabs/Areas/Area_03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58a4b34b5837abe4990444d4d8531517
+    m_Address: Assets/Prefabs/Areas/Area_04.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 9de00615732b7304a8be0e6a1a94e27d, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0aa0ed72ec4ac7f4387df4f6bc9202c1, type: 2}
+    - {fileID: 11400000, guid: e3559324ad4ecb740a10bc809c3cbf12, type: 2}
