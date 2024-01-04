@@ -37,10 +37,9 @@ public class CharacterGroupView : MonoBehaviour
 
     public void SetUnitSelected(int index)
     {
-        toggleGroup.SetAllTogglesOff();
+        toggleGroup.SetAllTogglesOff(false);
         characterButtons[index].Toggle.SetIsOnWithoutNotify(true);
     }
-
 
     private void SelectUnit(int unitID) => OnUnitSelected?.Invoke(unitID);
 }

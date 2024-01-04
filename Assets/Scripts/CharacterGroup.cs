@@ -14,6 +14,7 @@ public class CharacterGroup : MonoBehaviour
         GameManager.Player.SetSelectedObject(units[unitID]);
         GameManager.Camera.SetMainTarget(unitID);
         selectedUnit = units[unitID];
+        view.SetUnitSelected(unitID);
         foreach (var unit in units)
         {
             if (unit == selectedUnit) continue;
