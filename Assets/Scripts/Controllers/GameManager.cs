@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -18,7 +16,13 @@ public class GameManager : MonoBehaviour
 
     public static CameraController Camera => Instance.cameraController;
 
-    public void StartGame()
+    public void StartNewGame()
+    {
+        var newCharacterGroup = new GameObject().AddComponent<CharacterGroup>();
+        newCharacterGroup.Init(model.NumberOfUnits);
+    }
+
+    public void LoadGame()
     {
 
     }
@@ -32,6 +36,15 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+
+        if(model.IsNewGame)
+        {
+            StartNewGame();
+        }
+        else
+        {
+            LoadGame();
         }
     }
 }

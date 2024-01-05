@@ -9,6 +9,20 @@ public class CharacterGroup : MonoBehaviour
 
     private CharacterUnit selectedUnit;
 
+    public void Init(int numberOfUnits)
+    {
+        units = GetComponentsInChildren<CharacterUnit>();
+
+        for (int i = 0; i < units.Length; i++)
+        {
+            var id = i;
+            units[i].OnSelected += () => SelectUnit(id);
+            view.OnUnitSelected += SelectUnit;
+            view.CreateUnitButton(units[i].Model);
+            GameManager.Camera.AddTarget(units[i].transform);
+        }
+    }
+
     public void SelectUnit(int unitID)
     {
         GameManager.Player.SetSelectedObject(units[unitID]);
@@ -32,19 +46,5 @@ public class CharacterGroup : MonoBehaviour
 
         selectedUnit.ClearFollowTarget();
         selectedUnit.MoveTo(targetPosition);
-    }
-
-    private void Awake()
-    {
-        units = GetComponentsInChildren<CharacterUnit>();
-
-        for (int i = 0; i < units.Length; i++)
-        {
-            var id = i;
-            units[i].OnSelected += () => SelectUnit(id);
-            view.OnUnitSelected += SelectUnit;
-            view.CreateUnitButton(units[i].Model);
-            GameManager.Camera.AddTarget(units[i].transform);
-        }
     }
 }
