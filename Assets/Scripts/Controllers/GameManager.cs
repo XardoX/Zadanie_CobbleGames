@@ -12,14 +12,16 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private CameraController cameraController;
 
+    [SerializeField]
+    private CharacterGroup characterGroup;
+
     public static PlayerController Player => Instance.playerController; 
 
     public static CameraController Camera => Instance.cameraController;
 
     public void StartNewGame()
     {
-        var newCharacterGroup = new GameObject().AddComponent<CharacterGroup>();
-        newCharacterGroup.Init(model.NumberOfUnits);
+        characterGroup.Init(model.NumberOfUnits);
     }
 
     public void LoadGame()

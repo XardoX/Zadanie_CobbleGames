@@ -28,7 +28,7 @@ public class CharacterGroupView : MonoBehaviour
         var newButton = Instantiate(characterButtonPrefab, characterButtonsParent);
         var index = characterButtons.Count;
         newButton.Toggle.onValueChanged.AddListener((a) => SelectUnit(index));
-        newButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Unit {index}";
+        newButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Unit {index +1}";
         newButton.Toggle.group = toggleGroup;
         newButton.SetIconColor(characterModel.MainColor);
 

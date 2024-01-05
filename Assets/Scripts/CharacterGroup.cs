@@ -1,6 +1,10 @@
 using UnityEngine;
+using UnityEngine.AI;
+
 public class CharacterGroup : MonoBehaviour
 {
+    [SerializeField]
+    private CharacterUnit unitPrefab;
     [SerializeField]
     private CharacterUnit[] units;
 
@@ -11,11 +15,14 @@ public class CharacterGroup : MonoBehaviour
 
     public void Init(int numberOfUnits)
     {
-        units = GetComponentsInChildren<CharacterUnit>();
+        units = new CharacterUnit[numberOfUnits];
 
         for (int i = 0; i < units.Length; i++)
         {
             var id = i;
+            units[i] = Instantiate(unitPrefab, transform);
+            units[i].transform.position = transform.position + Vector3.right * id;
+            units[i].Init();
             units[i].OnSelected += () => SelectUnit(id);
             view.OnUnitSelected += SelectUnit;
             view.CreateUnitButton(units[i].Model);

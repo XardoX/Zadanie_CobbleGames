@@ -18,6 +18,27 @@ public class CharacterUnit : MonoBehaviour, ISelectable
 
     public CharacterModel Model => model;
 
+    public void Init()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        meshRenderer = GetComponent<MeshRenderer>();
+
+        if (model == null)
+        {
+            model = ScriptableObject.CreateInstance<CharacterModel>();
+        }
+
+        model.RandomizeStats();
+
+        agent.speed = model.Speed;
+        agent.angularSpeed = model.Agility;
+
+        var propertyBlock = new MaterialPropertyBlock();
+        meshRenderer.GetPropertyBlock(propertyBlock);
+        propertyBlock.SetColor("_BaseColor", model.MainColor);
+        meshRenderer.SetPropertyBlock(propertyBlock);
+    }
+
     public void MoveTo(Vector3 destination)
     {
         agent.SetDestination(destination);
@@ -44,22 +65,6 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         {
             MoveTo(hit.point);
         }
-    }
-
-    private void Awake()
-    {
-        agent = GetComponent<NavMeshAgent>();
-        meshRenderer = GetComponent<MeshRenderer>();
-
-        model.RandomizeStats();
-
-        agent.speed = model.Speed;
-        agent.angularSpeed = model.Agility;
-
-        var propertyBlock = new MaterialPropertyBlock();
-        meshRenderer.GetPropertyBlock(propertyBlock);
-        propertyBlock.SetColor("_BaseColor", model.MainColor);
-        meshRenderer.SetPropertyBlock(propertyBlock);
     }
 
     private void Update()
