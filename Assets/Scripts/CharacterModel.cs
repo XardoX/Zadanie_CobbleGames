@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Character Model", menuName ="Data/Character Model")]
+[System.Serializable]
 public class CharacterModel : ScriptableObject
 {
     [SerializeField]

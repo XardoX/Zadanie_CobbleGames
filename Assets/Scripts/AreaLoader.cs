@@ -25,6 +25,7 @@ public class AreaLoader : MonoBehaviour
 
     private void UnloadArea()
     {
+        if (instancedArea == null) return;
         area.ReleaseInstance(instancedArea);
     }
 

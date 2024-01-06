@@ -18,18 +18,12 @@ public class CharacterUnit : MonoBehaviour, ISelectable
 
     public CharacterModel Model => model;
 
-    public void Init()
+    public void Init(CharacterModel model)
     {
         agent = GetComponent<NavMeshAgent>();
         meshRenderer = GetComponent<MeshRenderer>();
 
-        if (model == null)
-        {
-            model = ScriptableObject.CreateInstance<CharacterModel>();
-        }
-
-        model.RandomizeStats();
-
+        this.model = model;
         agent.speed = model.Speed;
         agent.angularSpeed = model.Agility;
 
@@ -54,6 +48,12 @@ public class CharacterUnit : MonoBehaviour, ISelectable
     {
         followTarget = null;
         agent.stoppingDistance = 0f;
+    }
+
+    public void SetPosAndRot(Vector3 pos, Quaternion rot)
+    {
+        agent.Warp(pos);
+        transform.rotation = rot;
     }
 
     public void Select() => OnSelected?.Invoke();

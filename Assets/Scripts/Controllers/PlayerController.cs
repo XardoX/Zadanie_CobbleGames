@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private void AssignInputs()
     {
         input.Player.Move.performed += ctx => Select();
+        input.Player.Pause.performed += ctx => GameManager.Instance.TogglePause();
     }
 
     private void Select()

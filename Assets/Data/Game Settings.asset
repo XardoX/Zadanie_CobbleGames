@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Game Settings
   m_EditorClassIdentifier: 
   numberOfUnits: 4
-  isNewGame: 1
+  isNewGame: 0
