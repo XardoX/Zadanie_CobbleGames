@@ -16,6 +16,9 @@ public class MenuController : MonoBehaviour
     private Slider numberOfUnitsSlider;
 
     [SerializeField]
+    private Toggle aStarToggle;
+
+    [SerializeField]
     private GameModel gameModel;
 
     public void StartNewGame()
@@ -49,6 +52,7 @@ public class MenuController : MonoBehaviour
     private void Start()
     {
         loadGameButton.interactable = SaveManager.Instance.IsGameSaved();
-        numberOfUnitsSlider.value = gameModel.NumberOfUnits;
+        numberOfUnitsSlider.SetValueWithoutNotify(gameModel.NumberOfUnits);
+        aStarToggle.SetIsOnWithoutNotify(gameModel.IsUsingCustomAStar);
     }
 }

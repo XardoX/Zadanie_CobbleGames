@@ -18,6 +18,9 @@ namespace NavigationSystem
         [SerializeField]
         private int nodeFieldMaxSize = 50;
 
+        [SerializeField]
+        private LayerMask layerMask;
+
         private static Node[,] nodes;
 
         public static Node[,] Nodes => nodes;
@@ -37,7 +40,7 @@ namespace NavigationSystem
                 for (int j = 0; j < nodeFieldMaxSize; j++)
                 {
                     origin.z = j * nodeDistance - nodeFieldMaxSize/2;
-                    didHit = Physics.Raycast(origin, Vector3.down, out RaycastHit hit, raycastDistance);
+                    didHit = Physics.Raycast(origin, Vector3.down, out RaycastHit hit, raycastDistance, layerMask);
                     if (didHit)
                     {
                         nodes[i, j] = new Node(hit.point);
@@ -55,6 +58,11 @@ namespace NavigationSystem
             }
             else Destroy(gameObject);
 
+        }
+
+        private void Start()
+        {
+            Invoke(nameof(GenerateAllNodes), 0.5f); //for some reason nodes aren't generated correctly, when GenerateAllNodes is called from AreaLoader at start. This "fixes" the issue
         }
 
 #if UNITY_EDITOR

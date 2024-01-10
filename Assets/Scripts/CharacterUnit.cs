@@ -8,51 +8,92 @@ public class CharacterUnit : MonoBehaviour, ISelectable
     [SerializeField]
     private CharacterModel model;
 
-    private NavMeshAgent agent;
-
+    [SerializeField]
     private MeshRenderer meshRenderer;
+
+    private NavMeshAgent agent;
 
     private Transform followTarget;
 
     public Action OnSelected;
 
+    private bool isUsingCustomAstar;
+
+    private UnitMovement movement;
+
     public CharacterModel Model => model;
+
+    public bool IsUsingCustomAstar { get => isUsingCustomAstar; set => isUsingCustomAstar = value; }
 
     public void Init(CharacterModel model)
     {
         agent = GetComponent<NavMeshAgent>();
-        meshRenderer = GetComponent<MeshRenderer>();
-
+        movement = GetComponent<UnitMovement>();
+        
         this.model = model;
         agent.speed = model.Speed;
         agent.angularSpeed = model.Agility;
+
+        movement.moveSpeed = model.Speed;
 
         var propertyBlock = new MaterialPropertyBlock();
         meshRenderer.GetPropertyBlock(propertyBlock);
         propertyBlock.SetColor("_BaseColor", model.MainColor);
         meshRenderer.SetPropertyBlock(propertyBlock);
+
+        agent.enabled = !isUsingCustomAstar;
+      
     }
 
     public void MoveTo(Vector3 destination)
     {
-        agent.SetDestination(destination);
+        if(isUsingCustomAstar)
+        {
+            movement.SetDestination(destination);
+        }
+        else
+        {
+            agent.SetDestination(destination);
+        }
     }
 
     public void SetFollowTarget(Transform newTarget)
     {
         followTarget = newTarget;
-        agent.stoppingDistance = 2f;
+        if (isUsingCustomAstar)
+        {
+            movement.stoppingDistance = 2f;
+        }
+        else 
+        { 
+            agent.stoppingDistance = 2f;
+        }
+
     }
 
     public void ClearFollowTarget()
     {
         followTarget = null;
-        agent.stoppingDistance = 0f;
+        if (isUsingCustomAstar)
+        {
+            movement.stoppingDistance = 0f;
+        }
+        else
+        {
+            agent.stoppingDistance = 0f;
+        }
     }
 
     public void SetPosAndRot(Vector3 pos, Quaternion rot)
     {
-        agent.Warp(pos);
+        if (isUsingCustomAstar)
+        {
+            transform.position = pos;
+        }
+        else
+        {
+            agent.Warp(pos);
+        }
         transform.rotation = rot;
     }
 
@@ -76,7 +117,15 @@ public class CharacterUnit : MonoBehaviour, ISelectable
     {
         if(followTarget != null)
         {
-            agent.SetDestination(followTarget.position);
+            if (isUsingCustomAstar)
+            {
+                movement.SetDestination(followTarget.position);
+
+            }
+            else
+            {
+                agent.SetDestination(followTarget.position);
+            }
         }
     }
 

@@ -25,6 +25,7 @@ public class CharacterGroup : MonoBehaviour, ISaveable
             units[i] = Instantiate(unitPrefab, transform);
             units[i].transform.position = transform.position + Vector3.right * id;
             units[i].OnSelected += () => SelectUnit(id);
+            units[i].IsUsingCustomAstar = GameManager.Instance.Model.IsUsingCustomAStar;
             GameManager.Camera.AddTarget(units[i].transform);
 
             if (isNewGame)

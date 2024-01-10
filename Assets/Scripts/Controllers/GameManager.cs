@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 
     public static CameraController Camera => Instance.cameraController;
 
+    public GameModel Model => model; 
     bool isPaused;
 
     public void StartNewGame()
@@ -65,6 +66,10 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
         SaveManager.Instance.Init();
+    }
+
+    private void Start()
+    {
         if(model.IsNewGame)
         {
             StartNewGame();
@@ -73,5 +78,6 @@ public class GameManager : MonoBehaviour
         {
             LoadGame();
         }
+        
     }
 }

@@ -316,7 +316,6 @@ GameObject:
   m_Component:
   - component: {fileID: 203776614}
   - component: {fileID: 203776613}
-  - component: {fileID: 203776615}
   m_Layer: 0
   m_Name: NodeGenerator
   m_TagString: Untagged
@@ -339,7 +338,10 @@ MonoBehaviour:
   raycastStartHeight: 10
   raycastDistance: 11
   nodeDistance: 1
-  nodeFieldMaxSize: 15
+  nodeFieldMaxSize: 50
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!4 &203776614
 Transform:
   m_ObjectHideFlags: 0
@@ -355,20 +357,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &203776615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 203776612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acd77406bbde2c448b4a16a37ff6e756, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHeightDifference: 0.5
-  path: []
 --- !u!850595691 &294376480
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -1909,7 +1897,7 @@ PrefabInstance:
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
@@ -1919,7 +1907,7 @@ PrefabInstance:
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
@@ -1969,12 +1957,12 @@ PrefabInstance:
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
@@ -4200,7 +4188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AgentTypeID: 0
-  m_CollectObjects: 0
+  m_CollectObjects: 2
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
@@ -5212,7 +5200,7 @@ PrefabInstance:
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
@@ -5222,7 +5210,7 @@ PrefabInstance:
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
@@ -5267,12 +5255,12 @@ PrefabInstance:
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 7278945337902005494, guid: 2f9cb4f49b6d90946a181e03a668052a,
         type: 3}
@@ -6053,7 +6041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1972371333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6178,6 +6166,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cameras
+      objectReference: {fileID: 0}
+    - target: {fileID: 6182739134107128402, guid: b1bdac74e48bf4f40adfbee7fe63fbe2,
+        type: 3}
+      propertyPath: far clip plane
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7109364620558385000, guid: b1bdac74e48bf4f40adfbee7fe63fbe2,
         type: 3}

@@ -11,9 +11,11 @@ namespace NavigationSystem
         private float maxHeightDifference = 0.5f;
 
         [SerializeField]
-        private List<Node> path;
+        private List<Vector3> path;
 
         private List<Node> debugOpenSet = new();
+
+        public List<Vector3> Path => path;
 
         [Button]
         public void Test()
@@ -23,8 +25,16 @@ namespace NavigationSystem
             path = FindPath(Vector3.zero, targetpos);
         }
 
-        private List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
+        public List<Vector3> FindPath(Vector3 startPos, Vector3 targetPos)
         {
+            List<Node> openSet = new List<Node>();
+            HashSet<Node> closedSet = new HashSet<Node>();
+#if UNITY_EDITOR
+            debugOpenSet.Clear();
+#endif
+
+            if (NodeGenerator.Nodes == null) return null;
+
             Node startNode = GetClosestNode(startPos);
             Node targetNode = GetClosestNode(targetPos);
 
@@ -34,8 +44,6 @@ namespace NavigationSystem
                 return null;
             }
 
-            List<Node> openSet = new List<Node>();
-            HashSet<Node> closedSet = new HashSet<Node>();
 
             openSet.Add(startNode);
 
@@ -48,19 +56,20 @@ namespace NavigationSystem
                     if (openSet[i].FCost < currentNode.FCost || (openSet[i].FCost == currentNode.FCost && openSet[i].hCost < currentNode.hCost))
                     {
                         currentNode = openSet[i];
-                        Debug.Log("Set Current node to: " + currentNode.position);
+                        //Debug.Log("Set Current node to: " + currentNode.position);
                         break;
                     }
                 }
 
                 openSet.Remove(currentNode);
                 closedSet.Add(currentNode);
+#if UNITY_EDITOR
                 debugOpenSet.Add(currentNode);
+#endif
 
                 if (currentNode == targetNode)
                 {
-                    Debug.Log("Retrace Path");
-                    return RetracePath(startNode, targetNode);
+                    return path = RetracePath(startNode, targetNode);
                 }
 
                 foreach (Node neighbor in GetNeighbors(currentNode))
@@ -71,32 +80,30 @@ namespace NavigationSystem
 
                     int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
 
-                    // Check if the neighbor is not in the openSet or the new cost is lower
                     if (!openSet.Contains(neighbor) || newMovementCostToNeighbor < neighbor.gCost)
                     {
                         neighbor.gCost = newMovementCostToNeighbor;
                         neighbor.hCost = GetDistance(neighbor, targetNode);
                         neighbor.parent = currentNode;
-                        Debug.Log(currentNode.position + " Neigbour set " + neighbor.position +" gCost: "+ neighbor.gCost +" hCost: "+ neighbor.hCost);
+                        //Debug.Log(currentNode.position + " Neigbour set " + neighbor.position +" gCost: "+ neighbor.gCost +" hCost: "+ neighbor.hCost);
 
                         if (!openSet.Contains(neighbor))
                             openSet.Add(neighbor);
                     }
                 }
             }
-            Debug.Log(closedSet.Count);
 
             return null;
         }
 
-        private List<Node> RetracePath(Node startNode, Node endNode)
+        private List<Vector3> RetracePath(Node startNode, Node endNode)
         {
-            List<Node> path = new List<Node>();
+            List<Vector3> path = new List<Vector3>();
             Node currentNode = endNode;
 
             while (currentNode != startNode)
             {
-                path.Add(currentNode);
+                path.Add(currentNode.position);
                 if (currentNode.parent == null) break;
                 currentNode = currentNode.parent;
             }
@@ -146,7 +153,7 @@ namespace NavigationSystem
                 {
                     if (Mathf.Abs(node.position.y - nodes[newX, newY].position.y) > maxHeightDifference)
                         continue;
-                    Debug.Log(node.position + " n: " + newX + " : " + newY + " p: " + nodes[newX,newY].position);
+                    //Debug.Log(node.position + " n: " + newX + " : " + newY + " p: " + nodes[newX,newY].position);
                     neighbors.Add(nodes[newX, newY]);
                 }
             }
@@ -173,18 +180,18 @@ namespace NavigationSystem
             if (path == null || path.Count == 0) return;
 
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(path[path.Count -1].position + Vector3.up, 0.15f);
+            Gizmos.DrawSphere(path[path.Count -1] + Vector3.up, 0.15f);
 
             for (int i = 0; i < path.Count; i++)
             {
                 
-                Gizmos.DrawCube(path[i].position, Vector3.one * 0.26f);
+                Gizmos.DrawCube(path[i], Vector3.one * 0.26f);
             }
             Gizmos.color = Color.red;
 
             for (int i = 0; i < path.Count - 1; i++)
             {
-                Gizmos.DrawLine(path[i].position, path[i + 1].position);
+                Gizmos.DrawLine(path[i], path[i + 1]);
             }
 
         }

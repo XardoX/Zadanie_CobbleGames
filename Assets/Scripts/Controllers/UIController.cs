@@ -11,7 +11,10 @@ public class UIController: MonoBehaviour
 
     public void OpenPanel(CanvasGroup group)
     {
-        currentPanel.DOFade(0f, 0.25f).SetUpdate(true);
+        var oldPanel = currentPanel;
+        oldPanel.DOFade(0f, 0.25f).SetUpdate(true).OnComplete(() => oldPanel.gameObject.SetActive(false));
+
+        group.gameObject.SetActive(true);
         group.DOFade(1f, 0.25f).SetUpdate(true);
 
         currentPanel = group;

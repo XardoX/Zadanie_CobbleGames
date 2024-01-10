@@ -1,3 +1,4 @@
+using NavigationSystem;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -35,7 +36,16 @@ public class AreaLoader : MonoBehaviour
         {
             instancedArea = operation.Result;
             instancedArea.transform.position = transform.position;
-            surface.BuildNavMesh();
+            instancedArea.transform.parent = transform;
+
+            if(GameManager.Instance.Model.IsUsingCustomAStar)
+            {
+                NodeGenerator.Instance.GenerateAllNodes();
+            }
+            else
+            {
+                surface.BuildNavMesh();
+            }
         }
     }
 

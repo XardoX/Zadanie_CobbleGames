@@ -1,9 +1,13 @@
 using UnityEngine;
 using Cinemachine;
+using System.Collections;
+
 public class CameraController : MonoBehaviour
 {
     [SerializeField]
     private CinemachineTargetGroup targetGroup;
+    [SerializeField]
+    private Camera mainCamera;
 
     public void AddTarget(Transform transform)
     {
