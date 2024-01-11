@@ -11,19 +11,24 @@ public class CharacterUnit : MonoBehaviour, ISelectable
     [SerializeField]
     private MeshRenderer meshRenderer;
 
+    private UnitMovement movement;
+
     private NavMeshAgent agent;
 
     private Transform followTarget;
 
     public Action OnSelected;
 
-    private bool isUsingCustomAstar;
+    private bool isUsingCustomAstar, isStaminaRecovering;
 
-    private UnitMovement movement;
+    private float currentStamina;
+
+    private Vector3 lastFramePos;
 
     public CharacterModel Model => model;
 
     public bool IsUsingCustomAstar { get => isUsingCustomAstar; set => isUsingCustomAstar = value; }
+    public float CurrentStamina  => currentStamina;
 
     public void Init(CharacterModel model)
     {
@@ -31,10 +36,10 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         movement = GetComponent<UnitMovement>();
         
         this.model = model;
-        agent.speed = model.Speed;
-        agent.angularSpeed = model.Agility;
+        currentStamina = model.Stamina;
 
-        movement.moveSpeed = model.Speed;
+        SetMoveSpeed(model.Speed);
+        agent.angularSpeed = model.Agility;
 
         var propertyBlock = new MaterialPropertyBlock();
         meshRenderer.GetPropertyBlock(propertyBlock);
@@ -42,6 +47,7 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         meshRenderer.SetPropertyBlock(propertyBlock);
 
         agent.enabled = !isUsingCustomAstar;
+        movement.enabled = isUsingCustomAstar;
       
     }
 
@@ -113,6 +119,35 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         Follow();
     }
 
+    private void LateUpdate()
+    {
+        if(lastFramePos != transform.position)
+        {
+            if(currentStamina > 0)
+            {
+                currentStamina -= Time.deltaTime;
+                if(currentStamina <= 0)
+                {
+                    currentStamina = 0;
+                    SetMoveSpeed(model.Speed / 2);
+                    isStaminaRecovering = true;
+                }
+            }
+        }
+        else if (isStaminaRecovering)
+        {
+            currentStamina += Time.deltaTime;
+            if(currentStamina >=model.Stamina)
+            {
+                currentStamina = model.Stamina;
+                SetMoveSpeed(model.Speed);
+                isStaminaRecovering = false;
+            }
+        }
+
+        lastFramePos = transform.position;
+    }
+
     private void Follow()
     {
         if(followTarget != null)
@@ -127,6 +162,18 @@ public class CharacterUnit : MonoBehaviour, ISelectable
                 agent.SetDestination(followTarget.position);
             }
         }
+    }
+
+    private void SetMoveSpeed(float speed)
+    {
+        if (isUsingCustomAstar)
+        {
+            movement.moveSpeed = speed;
+        }else
+        { 
+            agent.speed = speed;
+        }
+
     }
 
 #if UNITY_EDITOR

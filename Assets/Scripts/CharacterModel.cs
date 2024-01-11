@@ -28,7 +28,7 @@ public class CharacterModel : ScriptableObject
 
         speed = Random.Range(1, 5);
         agility = Random.Range(60, 180);
-        stamina = Random.Range(1, 10);
+        stamina = Random.Range(1, 5);
 
     }
 }

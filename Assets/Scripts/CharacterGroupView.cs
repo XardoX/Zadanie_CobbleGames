@@ -30,8 +30,7 @@ public class CharacterGroupView : MonoBehaviour
         newButton.Toggle.onValueChanged.AddListener((a) => SelectUnit(index));
         newButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Unit {index +1}";
         newButton.Toggle.group = toggleGroup;
-        newButton.SetIconColor(characterModel.MainColor);
-
+        newButton.Init(characterModel.Stamina, characterModel.MainColor);
         characterButtons.Add(newButton);
     }
 
@@ -39,6 +38,11 @@ public class CharacterGroupView : MonoBehaviour
     {
         toggleGroup.SetAllTogglesOff(false);
         characterButtons[index].Toggle.SetIsOnWithoutNotify(true);
+    }
+
+    public void SetStaminaSlider(int index, float staminaValue)
+    {
+        characterButtons[index].SetStaminaSlider(staminaValue);
     }
 
     private void SelectUnit(int unitID) => OnUnitSelected?.Invoke(unitID);

@@ -87,4 +87,12 @@ public class CharacterGroup : MonoBehaviour, ISaveable
             data.units.Add(new UnitData(unit.Model, unit.transform.position, unit.transform.rotation));
         }
     }
+
+    private void LateUpdate()
+    {
+        for (int i = 0; i < units.Length; i++)
+        {
+            view.SetStaminaSlider(i, units[i].CurrentStamina);
+        }
+    }
 }
