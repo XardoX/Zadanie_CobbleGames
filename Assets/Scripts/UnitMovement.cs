@@ -14,15 +14,20 @@ public class UnitMovement : MonoBehaviour
 
     private Vector3 targetPos, destination;
 
-    public void SetDestination(Vector3 destination)
+    public void SetDestination(Vector3 destination, bool recalcatePath = true)
     {
-        pathfinder.FindPath(transform.position, destination);
+        if(recalcatePath)
+        {
+            pathfinder.FindPath(transform.position, destination);
+        }
         if(pathfinder.Path.Count > 0 )
         {
-            targetPos = pathfinder.Path[0];
+            targetPos = pathfinder.Path[0].position;
         }
+
         this.destination = destination;
     }
+
 
     private void MoveTowardsTarget(Vector3 targetPos)
     {
@@ -50,7 +55,7 @@ public class UnitMovement : MonoBehaviour
         }
         else if (pathfinder.Path.Count > 0)
         {
-            SetDestination(destination);
+           // SetDestination(destination);
         }
     }
 }

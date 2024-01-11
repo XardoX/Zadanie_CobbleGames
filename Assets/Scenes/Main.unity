@@ -342,6 +342,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 1
+  nodes: []
 --- !u!4 &203776614
 Transform:
   m_ObjectHideFlags: 0

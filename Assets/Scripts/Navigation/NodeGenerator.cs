@@ -21,17 +21,20 @@ namespace NavigationSystem
         [SerializeField]
         private LayerMask layerMask;
 
-        private static Node[,] nodes;
+        [SerializeField][ReadOnly]
+        private Node[] nodes;
 
-        public static Node[,] Nodes => nodes;
+        public static Node[] Nodes => Instance.nodes;
 
         public static float NodeDistance => Instance.nodeDistance;
+
+        public int NodeFieldMaxSize => nodeFieldMaxSize; 
 
         [Button]
 
         public void GenerateAllNodes()
         {
-            nodes = new Node[nodeFieldMaxSize, nodeFieldMaxSize];
+            nodes = new Node[nodeFieldMaxSize* nodeFieldMaxSize];
             Vector3 origin = new Vector3(-nodeFieldMaxSize/2 * nodeDistance, raycastStartHeight, -nodeFieldMaxSize/2 * nodeDistance);
             bool didHit = true;
             for (int i = 0; i < nodeFieldMaxSize; i++)
@@ -43,7 +46,8 @@ namespace NavigationSystem
                     didHit = Physics.Raycast(origin, Vector3.down, out RaycastHit hit, raycastDistance, layerMask);
                     if (didHit)
                     {
-                        nodes[i, j] = new Node(i, j, hit.point);
+                        var id = i + (j * nodeFieldMaxSize);
+                        nodes[id] = new Node(id, i, j, hit.point);
                     }
                 }
 
@@ -86,19 +90,11 @@ namespace NavigationSystem
         {
             if (Application.isPlaying == false) return;
             if(nodes == null) return;
-            for (int i = 0; i < nodes.GetLength(0); i++)
-            {
-                Gizmos.color = Color.magenta;
-                for (int j = 0; j < nodes.GetLength(1) - 1; j++)
-                {
-                    //Debug.Log(i + " "+j);
-                    if (nodes[i,j] != null)
-                    {
-                        Gizmos.DrawSphere(nodes[i,j].position + Vector3.up, 0.10f);
-                    Gizmos.color = Color.white;
-                    }
 
-                }
+            Gizmos.color = Color.white;
+            foreach (var node in nodes)
+            {
+                Gizmos.DrawSphere(node.position + Vector3.up, 0.10f);
 
             }
 
@@ -108,15 +104,19 @@ namespace NavigationSystem
     [System.Serializable]
     public class Node
     {
+        public int id;
         public int x, y;
         public Vector3 position;
+
         public int gCost;
         public int hCost;
         public float tCost;
+        public bool isOccupied;
         public Node parent;
 
-        public Node(int x, int y, Vector3 position)
+        public Node(int id, int x, int y, Vector3 position)
         {
+            this.id = id;
             this.x = x;
             this.y = y;
             this.position = position;

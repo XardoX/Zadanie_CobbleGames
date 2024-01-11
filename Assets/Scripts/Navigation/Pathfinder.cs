@@ -12,11 +12,15 @@ namespace NavigationSystem
         private float maxHeightDifference = 0.5f;
 
         [SerializeField]
-        private List<Vector3> path;
+        private List<Node> path;
 
         private List<Node> debugOpenSet = new();
 
-        public List<Vector3> Path => path;
+        public List<Node> Path => path;
+
+        private Node[] occupiedNodes;
+
+        private Node[] localNodes;
 
         [Button]
         public void Test()
@@ -26,8 +30,10 @@ namespace NavigationSystem
             path = FindPath(Vector3.zero, targetpos);
         }
 
-        public List<Vector3> FindPath(Vector3 startPos, Vector3 targetPos)
+        public List<Node> FindPath(Vector3 startPos, Vector3 targetPos)
         {
+            NodeGenerator.Nodes.CopyTo(localNodes, 0);
+
             List<Node> openSet = new List<Node>();
             HashSet<Node> closedSet = new HashSet<Node>();
 #if UNITY_EDITOR
@@ -70,9 +76,15 @@ namespace NavigationSystem
 
                 if (currentNode == targetNode)
                 {
-                    return path = RetracePath(startNode, targetNode);
+                    path = RetracePath(startNode, targetNode);
+
+                    SetOccupiedNodes(path);
+
+                    return path;
                 }
+
                 var debugString = currentNode.position +" n: ";
+
                 foreach (Node neighbor in GetNeighbors(currentNode))
                 {
 
@@ -84,12 +96,13 @@ namespace NavigationSystem
                     if (currentNode.parent != null)
                         newTurnCost = GetTurnCost(currentNode, neighbor);
 
-                    if (!openSet.Contains(neighbor) || newMovementCostToNeighbor + newTurnCost < neighbor.gCost)
+                    if (!openSet.Contains(neighbor) || newMovementCostToNeighbor < neighbor.gCost)
                     {
                         neighbor.gCost = newMovementCostToNeighbor;
                         neighbor.hCost = GetDistance(neighbor, targetNode);
                         if(currentNode.parent != null)
                             neighbor.tCost = newTurnCost;
+
                         neighbor.parent = currentNode;
                         debugString += $"\n{neighbor.position} g: {neighbor.gCost} h: {neighbor.hCost} t: {neighbor.tCost}";
                         //Debug.Log(currentNode.position + " Neigbour set " + neighbor.position +" gCost: "+ neighbor.gCost +" hCost: "+ neighbor.hCost);
@@ -104,14 +117,20 @@ namespace NavigationSystem
             return null;
         }
 
-        private List<Vector3> RetracePath(Node startNode, Node endNode)
+        private void Start()
         {
-            List<Vector3> path = new List<Vector3>();
+            localNodes = new Node[NodeGenerator.Nodes.Length];
+            occupiedNodes = new Node[1];
+        }
+
+        private List<Node> RetracePath(Node startNode, Node endNode)
+        {
+            List<Node> path = new List<Node>();
             Node currentNode = endNode;
 
             while (currentNode != startNode)
             {
-                path.Add(currentNode.position);
+                path.Add(currentNode);
                 if (currentNode.parent == null) break;
                 //Debug.Log(currentNode.parent.position + " n: " + currentNode.position + " cost: " + GetTurnCost(currentNode.parent, currentNode));
                 currentNode = currentNode.parent;
@@ -121,13 +140,29 @@ namespace NavigationSystem
             return path;
         }
 
+        private void SetOccupiedNodes(List<Node> nodes)
+        {
+            for (int i = 0; i < occupiedNodes.Length; i++)
+            {
+                if (occupiedNodes[i] == null) continue;
+                occupiedNodes[i].isOccupied = false;
+                occupiedNodes[i] = null;
+            }
+            
+            for (int i = 0; i < nodes.Count && i < occupiedNodes.Length; i++)
+            {
+                occupiedNodes[i] = NodeGenerator.Nodes[nodes[i].id];
+                occupiedNodes[i].isOccupied = true;
+            }
+            
+        }
+
         private Node GetClosestNode(Vector3 position)
         {
-            Node[,] nodes = NodeGenerator.Nodes;
             float closestDistance = float.MaxValue;
             Node closestNode = null;
 
-            foreach (Node node in nodes)
+            foreach (Node node in localNodes)
             {
                 if (node != null)
                 {
@@ -146,10 +181,9 @@ namespace NavigationSystem
         private List<Node> GetNeighbors(Node node)
         {
             List<Node> neighbors = new List<Node>();
-            Node[,] nodes = NodeGenerator.Nodes;
+            Node[] nodes = NodeGenerator.Nodes;
 
-            int gridSizeX = nodes.GetLength(0);
-            int gridSizeY = nodes.GetLength(1);
+            int gridSize = localNodes.Length;
 
             int[] dx = { 1, -1, 1, 0, -1, 0,};
             int[] dy = { 1, -1, 0, 1, 0, -1,};
@@ -158,12 +192,15 @@ namespace NavigationSystem
             {
                 int newX = node.x + dx[i];
                 int newY = node.y + dy[i];
-                if (newX >= 0 && newX < gridSizeX && newY >= 0 && newY < gridSizeY && nodes[newX, newY] != null)
+                var id = newX + (newY * NodeGenerator.Instance.NodeFieldMaxSize);
+
+                if (id >= localNodes.Length) continue;
+                if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize && localNodes[id] != null)
                 {
-                    if (Mathf.Abs(node.position.y - nodes[newX, newY].position.y) > maxHeightDifference)
+                    if (Mathf.Abs(node.position.y - localNodes[id].position.y) > maxHeightDifference || nodes[id].isOccupied)
                         continue;
                     //Debug.Log(node.position + " n: " + newX + " : " + newY + " p: " + nodes[newX,newY].position);
-                    neighbors.Add(nodes[newX, newY]);
+                    neighbors.Add(localNodes[id]);
                 }
             }
 
@@ -195,18 +232,18 @@ namespace NavigationSystem
             if (path == null || path.Count == 0) return;
 
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(path[path.Count -1] + Vector3.up, 0.15f);
+            Gizmos.DrawSphere(path[path.Count -1].position + Vector3.up, 0.15f);
 
             for (int i = 0; i < path.Count; i++)
             {
                 
-                Gizmos.DrawCube(path[i], Vector3.one * 0.26f);
+                Gizmos.DrawCube(path[i].position, Vector3.one * 0.26f);
             }
             Gizmos.color = Color.red;
 
             for (int i = 0; i < path.Count - 1; i++)
             {
-                Gizmos.DrawLine(path[i], path[i + 1]);
+                Gizmos.DrawLine(path[i].position, path[i + 1].position);
             }
 
         }

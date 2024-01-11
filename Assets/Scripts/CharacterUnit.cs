@@ -119,7 +119,7 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         {
             if (isUsingCustomAstar)
             {
-                movement.SetDestination(followTarget.position);
+                movement.SetDestination(followTarget.position, false);
 
             }
             else
