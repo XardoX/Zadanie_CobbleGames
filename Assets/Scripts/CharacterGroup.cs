@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
 using SaveSystem;
 
 public class CharacterGroup : MonoBehaviour, ISaveable

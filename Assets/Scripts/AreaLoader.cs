@@ -2,7 +2,6 @@ using NavigationSystem;
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.AI;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AreaLoader : MonoBehaviour

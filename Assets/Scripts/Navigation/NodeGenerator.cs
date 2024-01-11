@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
-using System;
 
 namespace NavigationSystem
 {
@@ -99,6 +97,7 @@ namespace NavigationSystem
             }
 
         }
+#endif
     }
 
     [System.Serializable]
@@ -125,7 +124,6 @@ namespace NavigationSystem
         public float FCost => gCost + hCost + tCost;
     }
 
-#endif
 }
 
 
