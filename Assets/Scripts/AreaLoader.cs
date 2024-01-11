@@ -40,7 +40,7 @@ public class AreaLoader : MonoBehaviour
 
             if(GameManager.Instance.Model.IsUsingCustomAStar)
             {
-                NodeGenerator.Instance.GenerateAllNodes();
+                NodeGenerator.Instance.GenerateNodesWithDelay(0.2f);
             }
             else
             {

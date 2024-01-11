@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using Unity.Burst;
 
 namespace NavigationSystem
 { 
@@ -71,7 +72,7 @@ namespace NavigationSystem
                 {
                     return path = RetracePath(startNode, targetNode);
                 }
-
+                var debugString = currentNode.position +" n: ";
                 foreach (Node neighbor in GetNeighbors(currentNode))
                 {
 
@@ -79,18 +80,25 @@ namespace NavigationSystem
                         continue;
 
                     int newMovementCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
+                    float newTurnCost = 0;
+                    if (currentNode.parent != null)
+                        newTurnCost = GetTurnCost(currentNode, neighbor);
 
-                    if (!openSet.Contains(neighbor) || newMovementCostToNeighbor < neighbor.gCost)
+                    if (!openSet.Contains(neighbor) || newMovementCostToNeighbor + newTurnCost < neighbor.gCost)
                     {
                         neighbor.gCost = newMovementCostToNeighbor;
                         neighbor.hCost = GetDistance(neighbor, targetNode);
+                        if(currentNode.parent != null)
+                            neighbor.tCost = newTurnCost;
                         neighbor.parent = currentNode;
+                        debugString += $"\n{neighbor.position} g: {neighbor.gCost} h: {neighbor.hCost} t: {neighbor.tCost}";
                         //Debug.Log(currentNode.position + " Neigbour set " + neighbor.position +" gCost: "+ neighbor.gCost +" hCost: "+ neighbor.hCost);
 
                         if (!openSet.Contains(neighbor))
                             openSet.Add(neighbor);
                     }
                 }
+                    //Debug.Log(debugString);
             }
 
             return null;
@@ -105,6 +113,7 @@ namespace NavigationSystem
             {
                 path.Add(currentNode.position);
                 if (currentNode.parent == null) break;
+                //Debug.Log(currentNode.parent.position + " n: " + currentNode.position + " cost: " + GetTurnCost(currentNode.parent, currentNode));
                 currentNode = currentNode.parent;
             }
 
@@ -142,13 +151,13 @@ namespace NavigationSystem
             int gridSizeX = nodes.GetLength(0);
             int gridSizeY = nodes.GetLength(1);
 
-            int[] dx = { 1, 0, -1, 0, 0, 1, -1 };
-            int[] dy = { 0, 1, 0, -1, 0, 1, -1 };
+            int[] dx = { 1, -1, 1, 0, -1, 0,};
+            int[] dy = { 1, -1, 0, 1, 0, -1,};
            
             for (int i = 0; i < dx.Length; i++)
             {
-                int newX = (int)(node.position.x + gridSizeX/2) + dx[i];
-                int newY = (int)(node.position.z + gridSizeY/2)+ dy[i];
+                int newX = node.x + dx[i];
+                int newY = node.y + dy[i];
                 if (newX >= 0 && newX < gridSizeX && newY >= 0 && newY < gridSizeY && nodes[newX, newY] != null)
                 {
                     if (Mathf.Abs(node.position.y - nodes[newX, newY].position.y) > maxHeightDifference)
@@ -167,6 +176,12 @@ namespace NavigationSystem
             int distY = (int)Mathf.Abs(nodeA.position.z - nodeB.position.z);
 
             return distX + distY;
+        }
+
+        private float GetTurnCost(Node nodeA, Node nodeB)
+        {
+            var dot = Vector3.Dot((nodeA.position - nodeA.parent.position).normalized, (nodeB.position - nodeA.position).normalized);
+            return (2 - (dot+ 1)) * 2;
         }
 #if UNITY_EDITOR
     private void OnDrawGizmos()

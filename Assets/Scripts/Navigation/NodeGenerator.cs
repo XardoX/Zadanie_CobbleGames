@@ -43,11 +43,27 @@ namespace NavigationSystem
                     didHit = Physics.Raycast(origin, Vector3.down, out RaycastHit hit, raycastDistance, layerMask);
                     if (didHit)
                     {
-                        nodes[i, j] = new Node(hit.point);
+                        nodes[i, j] = new Node(i, j, hit.point);
                     }
                 }
 
             }
+        }
+
+        public void GenerateNodesWithDelay(float  delay)
+        { 
+            if(coroutine == null)
+            {
+                coroutine = StartCoroutine(GenerateAllNodesDelayed(delay));
+            }
+        }
+
+        Coroutine coroutine;
+        private IEnumerator GenerateAllNodesDelayed(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            GenerateAllNodes();
+            coroutine = null;
         }
 
         private void Awake()
@@ -62,7 +78,7 @@ namespace NavigationSystem
 
         private void Start()
         {
-            Invoke(nameof(GenerateAllNodes), 0.5f); //for some reason nodes aren't generated correctly, when GenerateAllNodes is called from AreaLoader at start. This "fixes" the issue
+            GenerateAllNodes();
         }
 
 #if UNITY_EDITOR
@@ -92,17 +108,21 @@ namespace NavigationSystem
     [System.Serializable]
     public class Node
     {
+        public int x, y;
         public Vector3 position;
-        internal int gCost;
-        internal int hCost;
-        internal Node parent;
+        public int gCost;
+        public int hCost;
+        public float tCost;
+        public Node parent;
 
-        public Node(Vector3 position)
+        public Node(int x, int y, Vector3 position)
         {
+            this.x = x;
+            this.y = y;
             this.position = position;
         }
 
-        public int FCost => gCost + hCost;
+        public float FCost => gCost + hCost + tCost;
     }
 
 #endif
