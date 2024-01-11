@@ -40,15 +40,12 @@ public class UnitMovement : MonoBehaviour
     {
         if(Vector3.Distance(transform.position, destination) > stoppingDistance)
         {
-            if(Vector3.Distance(transform.position, targetPos) < 0.2f)
+            MoveTowardsTarget(targetPos);
+            if(Vector3.Distance(transform.position, targetPos) < 0.5f)
             {
                 SetDestination(destination);
             }
-            else
-            {
-                MoveTowardsTarget(targetPos);
-
-            }
+            
 
         }
         else if (pathfinder.Path.Count > 0)
