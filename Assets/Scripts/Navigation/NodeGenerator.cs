@@ -60,6 +60,27 @@ namespace NavigationSystem
             }
         }
 
+        public Node GetClosestNode(Vector3 position)
+        {
+            float closestDistance = float.MaxValue;
+            Node closestNode = null;
+
+            foreach (Node node in Nodes)
+            {
+                if (node != null)
+                {
+                    float distance = Vector3.Distance(position, node.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestNode = node;
+                    }
+                }
+            }
+
+            return closestNode;
+        }
+
         Coroutine coroutine;
         private IEnumerator GenerateAllNodesDelayed(float delay)
         {

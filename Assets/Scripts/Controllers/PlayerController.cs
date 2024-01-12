@@ -1,7 +1,10 @@
+using NavigationSystem;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private TargetCircle targetCircle;
 
     private Controls input;
 
@@ -13,6 +16,7 @@ public class PlayerController : MonoBehaviour
     { 
         input = new();
         AssignInputs();
+        targetCircle.Hide();
     }
 
     private void AssignInputs()
@@ -30,12 +34,19 @@ public class PlayerController : MonoBehaviour
             {
                 selectable.Select();
                 selectedObject = selectable;
+                targetCircle.Hide();
             }
             else
             {
+                var targetCirclePos = NodeGenerator.Instance.GetClosestNode(hit.point).position;
+                targetCircle.Show(targetCirclePos + Vector3.up * 0.1f);
                 selectedObject?.Action();
             }
 
+        }
+        else
+        {
+            targetCircle.Hide();
         }
     }
 
