@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class UnitMovement : MonoBehaviour
 {
-    public float moveSpeed;
+    public float moveSpeed, 
+        accelerationSpeed = 2f, 
+        stoppingDistance = 2f;
 
-    public float stoppingDistance = 2f;
+    private float acceleration;
 
     [SerializeField] 
     Pathfinder pathfinder;
@@ -36,7 +38,9 @@ public class UnitMovement : MonoBehaviour
 
     private void MoveTowardsNestPos(Vector3 position)
     {
-        var speed = moveSpeed * Time.deltaTime;
+        acceleration = Mathf.Clamp01(acceleration + accelerationSpeed * Time.deltaTime);
+        
+        var speed = moveSpeed * Time.deltaTime * acceleration;
 
         transform.position = Vector3.MoveTowards(transform.position, position, speed);
     }
@@ -55,6 +59,10 @@ public class UnitMovement : MonoBehaviour
             {
                 SetDestination(destination);
             }
+        }
+        else
+        {
+            acceleration = 0f;
         }
     }
 }
