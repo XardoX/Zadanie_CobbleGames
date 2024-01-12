@@ -20,7 +20,7 @@ public class CharacterUnit : MonoBehaviour, ISelectable
 
     private bool isUsingCustomAstar, isStaminaRecovering;
 
-    private float currentStamina, acceleration;
+    private float currentStamina;
 
     private Vector3 lastFramePos;
 
