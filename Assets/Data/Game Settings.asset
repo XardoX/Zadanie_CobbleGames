@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1f736223f69b234b8bb7dd4679bc93e, type: 3}
   m_Name: Game Settings
   m_EditorClassIdentifier: 
-  numberOfUnits: 4
+  numberOfUnits: 3
   isUsingCustomAStar: 1
-  isNewGame: 0
+  isNewGame: 1

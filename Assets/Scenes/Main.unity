@@ -338,7 +338,7 @@ MonoBehaviour:
   raycastStartHeight: 10
   raycastDistance: 11
   nodeDistance: 1
-  nodeFieldMaxSize: 50
+  nodeFieldMaxSize: 60
   layerMask:
     serializedVersion: 2
     m_Bits: 1

@@ -129,7 +129,7 @@ public class CharacterUnit : MonoBehaviour, ISelectable
                 if(currentStamina <= 0)
                 {
                     currentStamina = 0;
-                    SetMoveSpeed(model.Speed / 2);
+                    SetMoveSpeed(model.Speed * 0.75f);
                     isStaminaRecovering = true;
                 }
             }

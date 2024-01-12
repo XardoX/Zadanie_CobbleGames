@@ -17,7 +17,8 @@ public class TargetCircle : MonoBehaviour
         DOTween.To(() => size, x => size = x, 0.8f, 0.4f).OnUpdate(() =>
         {
             propertyBlock.SetFloat("_Size", size);
-            meshRenderer.SetPropertyBlock(propertyBlock);
+            if(meshRenderer != null)
+                meshRenderer.SetPropertyBlock(propertyBlock);
         });
     }
 

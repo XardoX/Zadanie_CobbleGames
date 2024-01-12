@@ -52,7 +52,7 @@ public class MenuController : MonoBehaviour
     private void Start()
     {
         loadGameButton.interactable = SaveManager.Instance.IsGameSaved();
-        numberOfUnitsSlider.SetValueWithoutNotify(gameModel.NumberOfUnits);
+        numberOfUnitsSlider.value =gameModel.NumberOfUnits;
         aStarToggle.SetIsOnWithoutNotify(gameModel.IsUsingCustomAStar);
     }
 }
