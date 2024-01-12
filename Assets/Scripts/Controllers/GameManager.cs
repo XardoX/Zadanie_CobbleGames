@@ -50,8 +50,15 @@ public class GameManager : MonoBehaviour
 
     public void BackToMenu()
     {
+        SaveManager.Instance.OnDataSaved += LoadMenu;
         SaveManager.Instance.SaveData();
+
         Time.timeScale = 1f;
+    }
+
+    private void LoadMenu()
+    {
+        SaveManager.Instance.OnDataSaved -= LoadMenu;
         SceneManager.LoadSceneAsync("Menu");
     }
 

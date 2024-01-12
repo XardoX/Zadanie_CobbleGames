@@ -42,6 +42,7 @@ public class CharacterGroupView : MonoBehaviour
 
     public void SetStaminaSlider(int index, float staminaValue)
     {
+        if (index >= characterButtons.Count) return;
         characterButtons[index].SetStaminaSlider(staminaValue);
     }
 

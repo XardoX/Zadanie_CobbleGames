@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using NaughtyAttributes;
 
 namespace SaveSystem
 {
     public class SaveManager : MonoBehaviour
     {
+        public Action OnDataSaved, OnDataLoaded;
         [SerializeField]
         private string fileName = "SaveData";
 
@@ -27,6 +30,7 @@ namespace SaveSystem
             saveData = new SaveData();
         }
 
+        [Button]
         public async void LoadData()
         {
             var result = await Task.Run(() =>
@@ -38,8 +42,10 @@ namespace SaveSystem
             {
                 item.LoadData(result);
             }
+            OnDataLoaded?.Invoke();
         }
 
+        [Button]
         public void SaveData()
         {
             if(saveData == null) NewSave();
@@ -50,6 +56,7 @@ namespace SaveSystem
                 item?.SaveData(ref saveData);
             }
             fileSaver.SaveAsync(saveData);
+            OnDataSaved?.Invoke();
         }
 
         public bool IsGameSaved()

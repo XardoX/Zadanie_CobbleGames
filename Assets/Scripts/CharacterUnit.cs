@@ -94,6 +94,7 @@ public class CharacterUnit : MonoBehaviour, ISelectable
         if (isUsingCustomAstar)
         {
             transform.position = pos;
+            movement.SetPosition(pos);
         }
         else
         {

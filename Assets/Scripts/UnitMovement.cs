@@ -10,7 +10,13 @@ public class UnitMovement : MonoBehaviour
     [SerializeField] 
     Pathfinder pathfinder;
 
-    private Vector3 targetPos, destination;
+    private Vector3 nextPos, destination;
+
+    public void SetPosition(Vector3 startPos)
+    {
+        nextPos = startPos;
+        destination = startPos;
+    }
 
     public void SetDestination(Vector3 destination, bool recalcatePath = true)
     {
@@ -18,20 +24,21 @@ public class UnitMovement : MonoBehaviour
         {
             pathfinder.FindPath(transform.position, destination);
         }
+
         if(pathfinder.Path.Count > 0 )
         {
-            targetPos = pathfinder.Path[0].position;
+            nextPos = pathfinder.Path[0].position;
         }
 
         this.destination = destination;
     }
 
 
-    private void MoveTowardsTarget(Vector3 targetPos)
+    private void MoveTowardsNestPos(Vector3 position)
     {
         var speed = moveSpeed * Time.deltaTime;
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, speed);
+        transform.position = Vector3.MoveTowards(transform.position, position, speed);
     }
 
     private void Awake()
@@ -43,17 +50,11 @@ public class UnitMovement : MonoBehaviour
     {
         if(Vector3.Distance(transform.position, destination) > stoppingDistance)
         {
-            MoveTowardsTarget(targetPos);
-            if(Vector3.Distance(transform.position, targetPos) < 0.5f)
+            MoveTowardsNestPos(nextPos);
+            if(Vector3.Distance(transform.position, nextPos) < 0.5f)
             {
                 SetDestination(destination);
             }
-            
-
-        }
-        else if (pathfinder.Path.Count > 0)
-        {
-           // SetDestination(destination);
         }
     }
 }
